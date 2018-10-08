@@ -3,6 +3,9 @@ import Record from "./Record";
 
 const Table = props => {
   const item = "prase";
+  /*const lines = props.data.map(item => (
+    <Record item= />
+  );*/
   return (
     <table>
       <tr>
@@ -10,9 +13,7 @@ const Table = props => {
         <th>Type</th>
         <th>Value</th>
       </tr>
-      {props.data.map(item => (
-        <Record item={item} />
-      ))}
+      {lines}
     </table>
   );
 };
