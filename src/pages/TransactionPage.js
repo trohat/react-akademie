@@ -1,17 +1,23 @@
 import React, { Component } from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { faChartBar } from "@fortawesome/free-regular-svg-icons";
+import Modal from "react-modal";
 
-import Transaction from "../components/Transaction";
+import TransactionList from "../components/TransactionList";
+import PageContainer from "../components/layout/PageContainer";
+import Header from "../components/layout/Header";
+import Content from "../components/layout/Content";
+import Footer from "../components/layout/Footer";
+import ToggleButtons from "../components/ToggleButtons";
+import AddTransactionForm from "../components/AddTransactionForm";
+import StyledButton from "../components/shared/StyledButton";
+import StyledIcon from "../components/shared/StyledIcon";
 import data from "../data.json";
-
-const Button = styled.button`
-  color: red;
-`;
 
 class TransactionPage extends Component {
   state = {
     transactions: [],
+    filterCategory: 0,
+    modalOpen: false,
     newTransaction: {
       name: "",
       value: 0,
@@ -23,57 +29,93 @@ class TransactionPage extends Component {
     this.setState({ transactions: data });
   }
 
+  setTransactinonVisibleCategory = index => {
+    this.setState({ filterCategory: index });
+  };
+
+  getFilteredTransactions = () => {
+    const { filterCategory, transactions } = this.state;
+    switch (filterCategory) {
+      case 0:
+      default:
+        return transactions;
+
+      case 1:
+        return transactions.filter(
+          transaction => transaction.type === "income"
+        );
+
+      case 2:
+        return transactions.filter(
+          transaction => transaction.type === "expense"
+        );
+    }
+  };
+
   addTransaction = event => {
     event.preventDefault();
+
     this.setState(prevState => ({
-      transactions: prevState.transactions.concat(prevState.newTransaction)
+      ...prevState,
+      modalOpen: false,
+      transactions: [...prevState.transactions, prevState.newTransaction]
     }));
   };
 
   handleInputChange = event => {
-    const newTransactionCopy = { ...this.state.newTransaction };
-    newTransactionCopy[event.target.id] = event.target.value;
-    this.setState({ newTransaction: newTransactionCopy });
+    const { id, value } = event.target;
+    this.setState((prevState, event) => ({
+      newTransaction: {
+        ...prevState.newTransaction,
+        [id]: value
+      }
+    }));
   };
 
   render() {
-    const {
-      transactions,
-      newTransaction: { name, value, type }
-    } = this.state;
+    const { filterCategory, modalOpen, newTransaction } = this.state;
 
     return (
-      <div>
-        <header>
-          <h1>basic page for Wallet app</h1>
-          <Link to="/overview">Overview Page</Link>
-          <br />
-          <form>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={this.handleInputChange}
-            />
-            <br />
-            <input
-              type="number"
-              id="value"
-              value={value}
-              onChange={this.handleInputChange}
-            />
-            <br />
-            <select id="type" value={type} onChange={this.handleInputChange}>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-            <Button onClick={this.addTransaction}>Přidat</Button>
-          </form>
-          {transactions.map(({ name, value, type, id }) => (
-            <Transaction key={id} name={name} value={value} type={type} />
-          ))}
-        </header>
-      </div>
+      <PageContainer>
+        <Header centered>
+          <ToggleButtons
+            margin="0 20px 0 0"
+            buttonNames={["All", "In", "Out"]}
+            onClick={this.setTransactinonVisibleCategory}
+            activeIndex={filterCategory}
+          />
+          <StyledButton
+            icon
+            onClick={() => this.props.history.push("/overview")}
+          >
+            <StyledIcon icon={faChartBar} />
+          </StyledButton>
+        </Header>
+        <Content>
+          <TransactionList
+            transactions={this.getFilteredTransactions()}
+            deleteTransaction={this.deleteTransaction}
+          />
+        </Content>
+        <Footer>
+          <StyledButton
+            block
+            onClick={() => this.setState({ modalOpen: true })}
+          >
+            Add new
+          </StyledButton>
+        </Footer>
+        <Modal
+          isOpen={modalOpen}
+          onRequestClose={() => this.setState({ modalOpen: false })}
+        >
+          <AddTransactionForm
+            newTransactionValues={newTransaction}
+            valueChanged={this.handleInputChange}
+            addTransaction={this.addTransaction}
+          />
+        </Modal>
+      </PageContainer>
     );
   }
 }
