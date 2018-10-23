@@ -12,6 +12,7 @@ import AddTransactionForm from "../components/AddTransactionForm";
 import StyledButton from "../components/shared/StyledButton";
 import StyledIcon from "../components/shared/StyledIcon";
 import data from "../data.json";
+import axios from "../util/axios";
 
 class TransactionPage extends Component {
   state = {
@@ -26,7 +27,9 @@ class TransactionPage extends Component {
   };
 
   componentDidMount() {
-    this.setState({ transactions: data });
+    axios.get("/transactions").then(response => {
+      this.setState({ transactions: response.data });
+    });
   }
 
   setTransactinonVisibleCategory = index => {
