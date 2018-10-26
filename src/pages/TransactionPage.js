@@ -11,12 +11,10 @@ import ToggleButtons from "../components/ToggleButtons";
 import AddTransactionForm from "../components/AddTransactionForm";
 import StyledButton from "../components/shared/StyledButton";
 import StyledIcon from "../components/shared/StyledIcon";
-import data from "../data.json";
-import axios from "../util/axios";
+import withTransactions from "../components/withTransactions";
 
 class TransactionPage extends Component {
   state = {
-    transactions: [],
     filterCategory: 0,
     modalOpen: false,
     newTransaction: {
@@ -26,18 +24,14 @@ class TransactionPage extends Component {
     }
   };
 
-  componentDidMount() {
-    axios.get("/transactions").then(response => {
-      this.setState({ transactions: response.data });
-    });
-  }
-
   setTransactinonVisibleCategory = index => {
     this.setState({ filterCategory: index });
   };
 
   getFilteredTransactions = () => {
-    const { filterCategory, transactions } = this.state;
+    const { filterCategory } = this.state;
+    const { transactions } = this.props;
+
     switch (filterCategory) {
       case 0:
       default:
@@ -123,4 +117,4 @@ class TransactionPage extends Component {
   }
 }
 
-export default TransactionPage;
+export default withTransactions(TransactionPage);
