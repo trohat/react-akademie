@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import withTransactions from "../components/withTransactions";
 
 const OverviewPage = props => {
   return (
@@ -10,4 +11,4 @@ const OverviewPage = props => {
   );
 };
 
-export default OverviewPage;
+export default withTransactions(OverviewPage);
