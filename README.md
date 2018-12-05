@@ -1,3 +1,6 @@
+Popis: toto je pracovní repozitář ke kurzu Reactu vyučovanému v Inventi v Praze.
+
+
 ![React Akademie](logo-header.png)
 
 # Aplikace Peněženka
