@@ -1,4 +1,6 @@
-Popis: toto je pracovní repozitář ke kurzu Reactu vyučovanému v Inventi v Praze.
+Description: this is a working repository for the React course taugth in Inventi in Prague in October 2018.
+
+Final project can be seen [here](https://github.com/trohat/my_transactions).
 
 
 ![React Akademie](logo-header.png)
